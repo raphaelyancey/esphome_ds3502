@@ -1,0 +1,53 @@
+esphome:
+  name: digipot
+  libraries:
+    - "Arduino"
+    - "Wire"
+    - "SPI"
+    - "Adafruit BusIO"
+    - "Adafruit DS3502"
+  includes:
+    - DS3502.h
+
+esp8266:
+  board: nodemcuv2
+
+# Enable logging
+logger:
+
+# # Enable Home Assistant API
+# api:
+#   password: ""
+
+ota:
+  password: ""
+
+wifi:
+  ssid: "XXXXXXXXX"
+  password: "XXXXXXXXXXXX"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Digipot Fallback Hotspot"
+    password: "ulAjBflvfrvt"
+
+captive_portal:
+
+web_server:
+  port: 80
+
+fan:
+  - platform: speed
+    id: digipot
+    output: digipot_output
+    name: "Digipot Wiper Value"
+  
+output:
+  - platform: custom
+    type: float
+    lambda: |-
+      auto digipot = new DS3502_Component(0x29);
+      App.register_component(digipot);
+      return {digipot};
+    outputs:
+      id: digipot_output
